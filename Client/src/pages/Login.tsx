@@ -6,6 +6,7 @@ import { Toaster } from "react-hot-toast"
 import { Link } from "react-router-dom"
 
 const Login = () => {
+    console.log("ENV API URL:", import.meta.env.VITE_STRAPI_API_URL);
 
     const [state, setState] = useState('login')
     const [username, setUsername] = useState('')
