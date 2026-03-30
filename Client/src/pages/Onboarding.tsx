@@ -9,6 +9,7 @@ import Button from "../components/ui/Button"
 import { ageRanges, goalOptions } from "../assets/assets"
 import Slider from "../components/ui/Slider"
 import api from "../configs/api"
+import { useNavigate } from "react-router-dom"
 
 
 const Onboarding = () => {
@@ -23,6 +24,8 @@ const Onboarding = () => {
         dailyCalorieIntake: 2000,
         dailyCalorieBurn: 400
     })
+
+    const navigate = useNavigate();
 
     const totalSteps = 3;
 
@@ -48,10 +51,29 @@ const Onboarding = () => {
             };
             localStorage.setItem('fitnessUser', JSON.stringify(userData))
             try {
-                await api.put(`/api/users/${user?.id}`, userData)
+                const token = localStorage.getItem("token")
+
+                if (!token) {
+                    return toast.error("Not authenticated")
+                }
+
+                if (!user?.id) {
+                    return toast.error("User not loaded yet")
+                }
+
+                await api.put(
+                    `/api/users/${user.id}`,
+                    userData,
+                )
+
                 toast.success('Profile updated successfully')
+
                 setOnboardingCompleted(true)
-                fetchUser(user?.token || "")
+
+                // ✅ MUST WAIT
+                await fetchUser(localStorage.getItem("token") || "")
+
+                navigate("/")
             } catch (error: any) {
                 toast.error(error.message)
             }

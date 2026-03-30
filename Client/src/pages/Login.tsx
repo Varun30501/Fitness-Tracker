@@ -1,8 +1,10 @@
+// pages/Login.tsx
 import { AtSignIcon, EyeIcon, EyeOffIcon, LockIcon, MailIcon } from "lucide-react"
 import React, { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { useAppContext } from "../context/AppContext"
 import { Toaster } from "react-hot-toast"
+import { Link } from "react-router-dom"
 
 const Login = () => {
 
@@ -19,20 +21,14 @@ const Login = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         setIsSubmitting(true)
-        if(state === "login"){
-            await login({email, password})
-        }else{
-            await signup({username, email, password})
+        if (state === "login") {
+            await login({ email, password })
+        } else {
+            await signup({ username, email, password })
         }
         setIsSubmitting(false)
 
     }
-
-    useEffect(() => {
-        if (user) {
-            navigate('/')
-        }
-    }, [user, navigate])
 
     return (
         <>
@@ -79,27 +75,47 @@ const Login = () => {
 
                     {/* Password */}
                     <div className="mt-4">
-                        <label className="font-medium text-sm text-gray-700
-                        dark:text-gray-300">Password</label>
+                        <label className="font-medium text-sm text-gray-700 dark:text-gray-300">
+                            Password
+                        </label>
+
                         <div className="relative mt-2">
-                            <LockIcon className="absolute left-3 top-1/2 -translate-y-1/2
-                            text-gray-400 size-4.5"/>
+                            <LockIcon
+                                className="absolute left-3 top-1/2 -translate-y-1/2
+      text-gray-400 size-4.5"
+                            />
+
                             <input
                                 onChange={(e) => setPassword(e.target.value)}
                                 value={password}
                                 placeholder="Please enter your password"
-                                className="login-input pr-10" required
-                                type={showPassword ? 'text' : 'password'} />
-                            <button type="button" className="absolute right-2
-                                top-1/2 -translate-y-1/2 text-gray-400
-                                hover:text-gray-600"
-                                onClick={() => setShowPassword((p) => !p)}>
-                                {showPassword ? <EyeOffIcon size={16} /> :
-                                    <EyeIcon size={16} />
-                                }
+                                className="login-input pr-10"
+                                required
+                                type={showPassword ? "text" : "password"}
+                            />
+
+                            <button
+                                type="button"
+                                className="absolute right-2 top-1/2 -translate-y-1/2
+      text-gray-400 hover:text-gray-600"
+                                onClick={() => setShowPassword((p) => !p)}
+                            >
+                                {showPassword ? <EyeOffIcon size={16} /> : <EyeIcon size={16} />}
                             </button>
                         </div>
+
+                        {/* Forgot Password Link */}
+                        <div className="flex justify-end mt-2">
+                            <Link
+                                to="/forgot-password"
+                                className="text-sm text-green-600 hover:underline
+      dark:text-green-500"
+                            >
+                                Forgot Password?
+                            </Link>
+                        </div>
                     </div>
+
 
                     <button type="submit" disabled={isSubmitting}
                         className="login-button">
@@ -112,8 +128,8 @@ const Login = () => {
                             <p className="text-center py-6 text-sm text-gray-500
                             dark:text-gray-400">
                                 Don't have an account?
-                                <button onClick={()=> setState('sign-up')}
-                                className="ml-1 cursor-pointer text-green-600
+                                <button onClick={() => setState('sign-up')}
+                                    className="ml-1 cursor-pointer text-green-600
                                 hover:underline">Sign up</button>
                             </p>
                         )
@@ -122,8 +138,8 @@ const Login = () => {
                             <p className="text-center py-6 text-sm text-gray-500
                             dark:text-gray-400">
                                 Already have an account?
-                                <button onClick={()=> setState('login')}
-                                className="ml-1 cursor-pointer text-green-600
+                                <button onClick={() => setState('login')}
+                                    className="ml-1 cursor-pointer text-green-600
                                 hover:underline">Login</button>
                             </p>
                         )}

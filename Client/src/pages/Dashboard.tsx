@@ -6,6 +6,7 @@ import Card from "../components/ui/Card"
 import ProgressBar from "../components/ui/ProgressBar"
 import { FlameIcon, HamburgerIcon, Activity, ZapIcon, TrendingUpIcon, ScaleIcon, Ruler } from "lucide-react"
 import CaloriesChart from "../components/CaloriesChart"
+import { useNavigate } from "react-router-dom"
 
 
 const Dashboard = () => {
@@ -21,16 +22,18 @@ const Dashboard = () => {
 
     const DAILY_CALORIE_LIMIT: number = user?.dailyCalorieIntake || 2000;
 
+    const navigate = useNavigate()
+
     // Load user data
     const loadUserData = () => {
         const today = new Date().toISOString().split('T')[0];
 
-        const foodData = allFoodLogs.filter((f: FoodEntry)=>f.createdAt?.split
-        ('T')[0] === today)
+        const foodData = allFoodLogs.filter((f: FoodEntry) => f.createdAt?.split
+            ('T')[0] === today)
         setTodayFood(foodData)
 
-        const activityData = allActivityLogs.filter((a: ActivityEntry)=> a.
-        createdAt?.split('T')[0] === today)
+        const activityData = allActivityLogs.filter((a: ActivityEntry) => a.
+            createdAt?.split('T')[0] === today)
         setTodayActivities(activityData)
     }
 
@@ -69,7 +72,9 @@ const Dashboard = () => {
                         <p className="text-white font-medium">{motivation.text}</p>
                     </div>
                 </div>
+
             </div >
+
 
             {/* Main Content */}
             < div className="dashboard-grid" >

@@ -27,6 +27,9 @@ export const AppProvider = ({children}: {children: React.ReactNode}) => {
         }
         localStorage.setItem('token', data.jwt)
         api.defaults.headers.common['Authorization'] = `Bearer ${data.jwt}`;
+
+        navigate('/')
+        
         } catch (error: any) {
             console.log(error);
             toast.error(error?.response?.data?.error?.message || 
@@ -46,6 +49,9 @@ export const AppProvider = ({children}: {children: React.ReactNode}) => {
         }
         localStorage.setItem('token', data.jwt)
         api.defaults.headers.common['Authorization'] = `Bearer ${data.jwt}`;
+
+        navigate('/')
+
         } catch (error: any) {
             console.log(error);
             toast.error(error?.response?.data?.error?.message || 
@@ -56,9 +62,7 @@ export const AppProvider = ({children}: {children: React.ReactNode}) => {
 
     const fetchUser = async (token: string) => {
         try {
-            const { data } = await api.get('/api/users/me', {headers:
-            {Authorization: `Bearer ${token}`}
-        })
+            const { data } = await api.get('/api/users/me')
         setUser({...data, token})
         if(data?.age && data?.weight && data?.goal){
             setOnboardingCompleted(true)
@@ -136,3 +140,6 @@ export const AppProvider = ({children}: {children: React.ReactNode}) => {
 }
 
 export const useAppContext = ()=> useContext(AppContext)
+
+
+
