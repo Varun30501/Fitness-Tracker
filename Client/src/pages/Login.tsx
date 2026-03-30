@@ -1,7 +1,6 @@
 // pages/Login.tsx
 import { AtSignIcon, EyeIcon, EyeOffIcon, LockIcon, MailIcon } from "lucide-react"
-import React, { useEffect, useState } from "react"
-import { useNavigate } from "react-router-dom"
+import React, { useState } from "react"
 import { useAppContext } from "../context/AppContext"
 import { Toaster } from "react-hot-toast"
 import { Link } from "react-router-dom"
@@ -15,8 +14,8 @@ const Login = () => {
     const [showPassword, setShowPassword] = useState(false)
     const [isSubmitting, setIsSubmitting] = useState(false)
 
-    const navigate = useNavigate()
-    const { login, signup, user } = useAppContext()
+    
+    const { login, signup } = useAppContext()
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()

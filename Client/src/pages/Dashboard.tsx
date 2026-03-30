@@ -6,7 +6,6 @@ import Card from "../components/ui/Card"
 import ProgressBar from "../components/ui/ProgressBar"
 import { FlameIcon, HamburgerIcon, Activity, ZapIcon, TrendingUpIcon, ScaleIcon, Ruler } from "lucide-react"
 import CaloriesChart from "../components/CaloriesChart"
-import { useNavigate } from "react-router-dom"
 
 
 const Dashboard = () => {
@@ -21,8 +20,6 @@ const Dashboard = () => {
     const [todayActivities, setTodayActivities] = useState<ActivityEntry[]>([])
 
     const DAILY_CALORIE_LIMIT: number = user?.dailyCalorieIntake || 2000;
-
-    const navigate = useNavigate()
 
     // Load user data
     const loadUserData = () => {
