@@ -1,6 +1,6 @@
 import { MailIcon } from "lucide-react"
 import { useState } from "react"
-import axios from "axios"
+import api from "../configs/api"
 import toast from "react-hot-toast"
 import { Link } from "react-router-dom"
 
@@ -16,7 +16,7 @@ const ForgotPassword = () => {
 
     try{
 
-      await axios.post("/api/auth/forgot-password",{ email })
+      await api.post("/api/auth/forgot-password",{ email })
       toast.success("Reset email sent")
 
     }catch(err:any){
