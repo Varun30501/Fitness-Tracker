@@ -6,20 +6,26 @@ import { Link } from "react-router-dom"
 
 const ForgotPassword = () => {
 
-  const [email,setEmail] = useState("")
-  const [isSubmitting,setIsSubmitting] = useState(false)
+  const [email, setEmail] = useState("")
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const submitHandler = async (e:React.FormEvent)=>{
+  const submitHandler = async (e: React.FormEvent) => {
 
     e.preventDefault()
     setIsSubmitting(true)
 
-    try{
+    try {
 
-      await api.post("/api/auth/forgot-password",{ email })
+      await api.post("/api/auth/forgot-password", { email },
+        {
+          headers: {
+            Authorization: undefined,
+          },
+        }
+      )
       toast.success("Reset email sent")
 
-    }catch(err:any){
+    } catch (err: any) {
 
       toast.error(err.response?.data?.error?.message || "Failed to send email")
 
@@ -59,7 +65,7 @@ const ForgotPassword = () => {
             <input
               type="email"
               value={email}
-              onChange={(e)=>setEmail(e.target.value)}
+              onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your email"
               className="login-input"
               required
