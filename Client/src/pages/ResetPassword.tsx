@@ -1,7 +1,7 @@
 import { LockIcon } from "lucide-react"
 import { useState } from "react"
 import { useSearchParams, useNavigate } from "react-router-dom"
-import axios from "axios"
+import api from "../configs/api"
 import toast from "react-hot-toast"
 
 const ResetPassword = () => {
@@ -29,7 +29,7 @@ const ResetPassword = () => {
 
     try{
 
-      await axios.post("/api/auth/reset-password",{
+      await api.post("/api/auth/reset-password",{
         code,
         password,
         passwordConfirmation: confirmPassword
