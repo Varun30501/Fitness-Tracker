@@ -5,6 +5,8 @@ import Dashboard from "./pages/Dashboard"
 import FoodLog from "./pages/FoodLog"
 import ActivityLog from "./pages/ActivityLog"
 import Profile from "./pages/Profile"
+import AiCoach from "./pages/AiCoach"
+import Settings from "./pages/Settings"
 import { useAppContext } from "./context/AppContext"
 import Login from "./pages/Login"
 import Loading from "./components/Loading"
@@ -51,6 +53,8 @@ const App = () => {
             <Route index element={<Dashboard />} />
             <Route path="food" element={<FoodLog />} />
             <Route path="activity" element={<ActivityLog />} />
+            <Route path="coach" element={<AiCoach />} />
+            <Route path="settings" element={<Settings />} />
             <Route path="profile" element={<Profile />} />
           </Route>
         )}

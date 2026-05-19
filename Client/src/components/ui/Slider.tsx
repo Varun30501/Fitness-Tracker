@@ -35,14 +35,14 @@ const Slider: React.FC<SliderProps> = ({ label, min = 0, max = 100, step = 1, va
                     </span>
                 </div>
             )}
-            <div className="relative w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-full cursor-pointer">
+            <div className="relative h-2 w-full cursor-pointer rounded-full bg-slate-200/80 shadow-inner shadow-slate-950/5 dark:bg-slate-700/80">
                 {/* Track fill */}
-                <div className="absolute top-0 left-0 h-full bg-emerald-500 rounded-full" style={{ width: `${percentage}%` }} />
+                <div className="absolute left-0 top-0 h-full rounded-full bg-linear-to-r from-emerald-500 via-teal-500 to-cyan-500 shadow-lg shadow-emerald-500/20" style={{ width: `${percentage}%` }} />
 
                 {/* Thumb input */}
                 <input type="range" min={min} max={max} step={step} value={value} onChange={(e) => onChange(Number(e.target.value))} className="absolute w-full h-full opacity-0 cursor-pointer z-10" />
 
-                <div className="absolute top-1/2 -translate-y-1/2 w-4 h-4 bg-white border-2 border-emerald-500 rounded-full shadow-md pointer-events-none transition-transform duration-75 ease-out" style={{ left: `calc(${percentage}% - 8px)` }} />
+                <div className="pointer-events-none absolute top-1/2 h-5 w-5 -translate-y-1/2 rounded-full border-2 border-emerald-500 bg-white shadow-lg shadow-emerald-900/20 transition-transform duration-75 ease-out dark:bg-slate-950" style={{ left: `calc(${percentage}% - 10px)` }} />
             </div>
         </div>
     );

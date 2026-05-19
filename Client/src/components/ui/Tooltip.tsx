@@ -9,7 +9,7 @@ export default function Tooltip({ content, children }: TooltipProps) {
     return (
         <div className="relative group flex items-center">
             {children}
-            <div className="absolute bottom-full mb-2 hidden group-hover:block w-48 p-2 bg-slate-800 text-white text-xs rounded-md shadow-lg z-50 left-1/2 -translate-x-1/2 text-center pointer-events-none">
+            <div className="pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 hidden w-48 -translate-x-1/2 rounded-lg border border-white/10 bg-slate-900/95 p-2 text-center text-xs text-white shadow-xl shadow-slate-950/20 backdrop-blur-xl group-hover:block">
                 {content}
             </div>
         </div>

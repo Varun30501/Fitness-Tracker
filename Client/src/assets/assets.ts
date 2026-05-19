@@ -49,33 +49,33 @@ export const dummyActivityLogs: ActivityEntry[] = [
 ];
 
 export const quickActivities = [
-    { name: "Walking", emoji: "🚶", rate: 5 },
-    { name: "Running", emoji: "🏃", rate: 11 },
-    { name: "Cycling", emoji: "🚴", rate: 8 },
-    { name: "Swimming", emoji: "🏊", rate: 10 },
-    { name: "Yoga", emoji: "🧘", rate: 4 },
-    { name: "Weight Training", emoji: "🏋️", rate: 6 },
+    { name: "Walking", rate: 5 },
+    { name: "Running", rate: 11 },
+    { name: "Cycling", rate: 8 },
+    { name: "Swimming", rate: 10 },
+    { name: "Yoga", rate: 4 },
+    { name: "Weight Training", rate: 6 },
 ];
 
 export const mealTypeOptions = [
-    { value: "breakfast", label: "🌅 Breakfast" },
-    { value: "lunch", label: "☀️ Lunch" },
-    { value: "dinner", label: "🌙 Dinner" },
-    { value: "snack", label: "🍪 Snack" },
+    { value: "breakfast", label: "Breakfast" },
+    { value: "lunch", label: "Lunch" },
+    { value: "dinner", label: "Dinner" },
+    { value: "snack", label: "Snack" },
 ];
 
 export const quickActivitiesFoodLog = [
-    { name: "breakfast", emoji: "🌮" },
-    { name: "lunch", emoji: "🌅" },
-    { name: "dinner", emoji: "🌙" },
-    { name: "snack", emoji: "🍪" },
+    { name: "breakfast", label: "Breakfast" },
+    { name: "lunch", label: "Lunch" },
+    { name: "dinner", label: "Dinner" },
+    { name: "snack", label: "Snack" },
 ];
 
 export const mealColors = {
-    breakfast: "bg-amber-100 text-amber-600",
-    lunch: "bg-orange-100 text-orange-600",
-    dinner: "bg-indigo-100 text-indigo-600",
-    snack: "bg-pink-100 text-pink-600",
+    breakfast: "bg-amber-100 text-amber-600 dark:bg-amber-500/20 dark:text-amber-300",
+    lunch: "bg-orange-100 text-orange-600 dark:bg-orange-500/20 dark:text-orange-300",
+    dinner: "bg-indigo-100 text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-300",
+    snack: "bg-pink-100 text-pink-600 dark:bg-pink-500/20 dark:text-pink-300",
 };
 
 export const mealIcons = {
@@ -126,19 +126,19 @@ export const getMotivationalMessage = (caloriesConsumed: number, activeMinutes: 
     const percentage = (caloriesConsumed / DAILY_CALORIE_LIMIT) * 100;
 
     if (caloriesConsumed === 0 && activeMinutes === 0) {
-        return { text: "Ready to crush today? Start logging!", emoji: "💪" };
+        return { text: "Ready to crush today? Start logging!", tone: "Fresh start" };
     }
     if (percentage > 100) {
-        return { text: "Over limit, but tomorrow is a new day!", emoji: "🌅" };
+        return { text: "Over limit, but tomorrow is a new day!", tone: "Reset" };
     }
     if (percentage >= 80) {
-        return { text: "Almost at your limit, stay mindful!", emoji: "⚡" };
+        return { text: "Almost at your limit, stay mindful!", tone: "Mindful" };
     }
     if (activeMinutes >= 30) {
-        return { text: "Great workout today! Keep it up!", emoji: "🔥" };
+        return { text: "Great workout today! Keep it up!", tone: "Strong" };
     }
     if (percentage >= 50) {
-        return { text: "You're doing great, keep going!", emoji: "✨" };
+        return { text: "You're doing great, keep going!", tone: "On track" };
     }
-    return { text: "Every step counts. You've got this!", emoji: "🚀" };
+    return { text: "Every step counts. You've got this!", tone: "Keep going" };
 };
