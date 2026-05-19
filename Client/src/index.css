@@ -137,7 +137,7 @@ body::before {
 
 /* Login Page */
 .login-page-container {
-  @apply grid min-h-screen w-full place-items-center overflow-hidden px-4 py-8 transition-colors duration-300 lg:px-8;
+  @apply grid h-screen w-full place-items-center overflow-hidden px-4 py-3 transition-colors duration-300 lg:px-8;
 }
 
 .login-form {
@@ -145,11 +145,11 @@ body::before {
 }
 
 .login-input {
-  @apply w-full rounded-lg border border-slate-200/80 bg-white/75 p-3 pl-10 text-slate-900 shadow-sm shadow-slate-950/5 outline-none backdrop-blur-xl transition-all duration-300 placeholder:text-slate-400 focus:border-emerald-400 focus:ring-4 focus:ring-emerald-500/20 dark:border-white/10 dark:bg-slate-900/70 dark:text-white dark:placeholder:text-slate-500;
+  @apply w-full rounded-lg border border-slate-200/80 bg-white/75 p-2.5 pl-10 text-slate-900 shadow-sm shadow-slate-950/5 outline-none backdrop-blur-xl transition-all duration-300 placeholder:text-slate-400 focus:border-emerald-400 focus:ring-4 focus:ring-emerald-500/20 dark:border-white/10 dark:bg-slate-900/70 dark:text-white dark:placeholder:text-slate-500;
 }
 
 .login-button {
-  @apply mt-6 w-full rounded-lg bg-linear-to-r from-emerald-500 via-teal-500 to-cyan-500 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-600/25 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-emerald-600/30 disabled:translate-y-0 disabled:opacity-60;
+  @apply mt-4 w-full rounded-lg bg-linear-to-r from-emerald-500 via-teal-500 to-cyan-500 py-2.5 text-sm font-semibold text-white shadow-lg shadow-emerald-600/25 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-emerald-600/30 disabled:translate-y-0 disabled:opacity-60;
 }
 
 /* Dashboard Page */

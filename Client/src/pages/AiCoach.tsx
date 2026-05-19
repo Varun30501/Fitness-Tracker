@@ -4,6 +4,7 @@ import {
     BotIcon,
     BrainCircuitIcon,
     CalendarCheckIcon,
+    CameraIcon,
     FlameIcon,
     HeartPulseIcon,
     LightbulbIcon,
@@ -11,6 +12,8 @@ import {
     SendIcon,
     ShieldCheckIcon,
     SparklesIcon,
+    TargetIcon,
+    TrendingUpIcon,
     UtensilsIcon,
 } from "lucide-react"
 import Card from "../components/ui/Card"
@@ -34,11 +37,34 @@ type CoachContext = {
     remainingCalories: number;
 }
 
+type InfoTab = "about" | "features"
+
 const quickPrompts = [
     "Review my day",
     "Suggest dinner",
     "Workout nudge",
     "Protein ideas",
+]
+
+const coachFeatureRows = [
+    {
+        title: "Food Snap",
+        text: "Use meal photos as a starting point for faster food entries.",
+        icon: CameraIcon,
+        color: "bg-emerald-500/10 text-emerald-500",
+    },
+    {
+        title: "Daily Review",
+        text: "Turn today's meals and activity into a simple progress summary.",
+        icon: TrendingUpIcon,
+        color: "bg-cyan-500/10 text-cyan-500",
+    },
+    {
+        title: "Goal Nudges",
+        text: "Suggest small next steps based on intake, burn, and consistency.",
+        icon: TargetIcon,
+        color: "bg-orange-500/10 text-orange-500",
+    },
 ]
 
 const buildCoachReply = (prompt: string, context: CoachContext) => {
@@ -78,6 +104,7 @@ const buildCoachReply = (prompt: string, context: CoachContext) => {
 const AiCoach = () => {
     const { user, allFoodLogs, allActivityLogs } = useAppContext()
     const [input, setInput] = useState("")
+    const [infoTab, setInfoTab] = useState<InfoTab>("about")
     const messageIdRef = useRef(2)
 
     const today = new Date().toISOString().split("T")[0]
@@ -235,6 +262,54 @@ const AiCoach = () => {
                 </Card>
 
                 <div className="mt-4 space-y-4 lg:mt-0">
+                    <Card>
+                        <div className="mb-4 flex items-center gap-3">
+                            <div className="flex size-10 items-center justify-center rounded-lg bg-cyan-500/10">
+                                <SparklesIcon className="size-5 text-cyan-500" />
+                            </div>
+                            <div>
+                                <h3 className="font-semibold text-slate-900 dark:text-white">Smart Info</h3>
+                                <p className="text-sm text-slate-500 dark:text-slate-400">What the assistant is meant for.</p>
+                            </div>
+                        </div>
+
+                        <div className="mb-4 grid grid-cols-2 rounded-lg bg-slate-100/80 p-1 dark:bg-slate-950/60">
+                            {(["about", "features"] as const).map((tab) => (
+                                <button
+                                    key={tab}
+                                    onClick={() => setInfoTab(tab)}
+                                    className={`rounded-lg px-3 py-2 text-sm font-semibold capitalize transition-all ${infoTab === tab
+                                        ? "bg-white text-cyan-700 shadow-sm dark:bg-slate-800 dark:text-cyan-300"
+                                        : "text-slate-500 dark:text-slate-400"
+                                        }`}>
+                                    {tab}
+                                </button>
+                            ))}
+                        </div>
+
+                        {infoTab === "about" ? (
+                            <div className="rounded-lg border border-slate-200/70 bg-white/60 p-4 dark:border-white/10 dark:bg-slate-800/60">
+                                <p className="text-sm text-slate-600 dark:text-slate-300">
+                                    FitCoach is a lightweight helper for food decisions, workout nudges, and support prompts. It uses your current day logs first, then gives simple next-step suggestions.
+                                </p>
+                            </div>
+                        ) : (
+                            <div className="space-y-3">
+                                {coachFeatureRows.map((feature) => (
+                                    <div key={feature.title} className="flex items-start gap-3 rounded-lg border border-slate-200/70 bg-white/60 p-3 dark:border-white/10 dark:bg-slate-800/60">
+                                        <div className={`flex size-9 shrink-0 items-center justify-center rounded-lg ${feature.color}`}>
+                                            <feature.icon className="size-4" />
+                                        </div>
+                                        <div>
+                                            <p className="font-semibold text-slate-900 dark:text-white">{feature.title}</p>
+                                            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{feature.text}</p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </Card>
+
                     <Card>
                         <div className="mb-4 flex items-center gap-3">
                             <div className="flex size-10 items-center justify-center rounded-lg bg-emerald-500/10">
