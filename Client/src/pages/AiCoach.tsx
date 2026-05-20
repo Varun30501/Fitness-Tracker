@@ -19,6 +19,7 @@ import {
 import Card from "../components/ui/Card"
 import Button from "../components/ui/Button"
 import { useAppContext } from "../context/AppContext"
+import api from "../configs/api"
 
 type CoachMessage = {
     id: number;
@@ -67,44 +68,20 @@ const coachFeatureRows = [
     },
 ]
 
-const buildCoachReply = (prompt: string, context: CoachContext) => {
-    const normalizedPrompt = prompt.toLowerCase()
-
-    if (normalizedPrompt.includes("dinner") || normalizedPrompt.includes("food") || normalizedPrompt.includes("meal")) {
-        if (context.remainingCalories < 250) {
-            return "Keep dinner light today: paneer or tofu salad, soup with lean protein, or curd with fruit. You are close to your calorie target, so prioritize protein and volume.";
-        }
-
-        return `You have about ${context.remainingCalories} kcal left. A balanced dinner could be dal, rice, vegetables, and curd, or grilled chicken/paneer with salad and a small carb portion.`;
+const getErrorMessage = (error: unknown, fallback = "FitCoach could not respond right now.") => {
+    if (typeof error === "object" && error !== null) {
+        const maybeError = error as { response?: { data?: { error?: { message?: string } } }; message?: string };
+        return maybeError.response?.data?.error?.message || maybeError.message || fallback;
     }
 
-    if (normalizedPrompt.includes("workout") || normalizedPrompt.includes("activity") || normalizedPrompt.includes("burn")) {
-        if (context.activeMinutes >= 30) {
-            return "You already have a solid activity base today. If you still feel fresh, add 10 minutes of mobility or a relaxed walk instead of chasing intensity.";
-        }
-
-        return "A simple option: 20 minutes brisk walking plus 3 rounds of squats, wall pushups, and planks. Keep it easy enough that you can repeat it tomorrow.";
-    }
-
-    if (normalizedPrompt.includes("protein")) {
-        return "Try adding one protein anchor to your next meal: eggs, paneer, tofu, chicken, dal, Greek yogurt, sprouts, or whey. Pair it with vegetables so it stays filling.";
-    }
-
-    if (context.mealsLogged === 0 && context.workoutsLogged === 0) {
-        return "No logs yet today. Start with one meal entry or a short walk. The first useful data point is more important than a perfect day.";
-    }
-
-    if (context.totalCalories > context.calorieGoal) {
-        return `You are ${Math.abs(context.remainingCalories)} kcal above your intake target. Avoid panic edits; log honestly, add hydration, and aim for a lighter next meal.`;
-    }
-
-    return `Today: ${context.totalCalories} kcal in, ${context.caloriesBurned} kcal burned, and ${context.activeMinutes} active minutes. You have ${context.remainingCalories} kcal left against your intake target.`;
+    return fallback;
 }
 
 const AiCoach = () => {
     const { user, allFoodLogs, allActivityLogs } = useAppContext()
     const [input, setInput] = useState("")
     const [infoTab, setInfoTab] = useState<InfoTab>("about")
+    const [isThinking, setIsThinking] = useState(false)
     const messageIdRef = useRef(2)
 
     const today = new Date().toISOString().split("T")[0]
@@ -138,9 +115,9 @@ const AiCoach = () => {
         },
     ])
 
-    const sendPrompt = (prompt: string) => {
+    const sendPrompt = async (prompt: string) => {
         const trimmedPrompt = prompt.trim()
-        if (!trimmedPrompt) return
+        if (!trimmedPrompt || isThinking) return
         const userMessageId = messageIdRef.current + 1
         const coachMessageId = messageIdRef.current + 2
         messageIdRef.current = coachMessageId
@@ -151,19 +128,45 @@ const AiCoach = () => {
             text: trimmedPrompt,
         }
 
-        const coachMessage: CoachMessage = {
-            id: coachMessageId,
-            role: "assistant",
-            text: buildCoachReply(trimmedPrompt, context),
-        }
+        const history = [...messages, userMessage].slice(-8).map((message) => ({
+            role: message.role,
+            text: message.text,
+        }))
 
-        setMessages((prev) => [...prev, userMessage, coachMessage])
+        setMessages((prev) => [...prev, userMessage])
         setInput("")
+        setIsThinking(true)
+
+        try {
+            const { data } = await api.post("/api/ai-coach", {
+                prompt: trimmedPrompt,
+                context,
+                history,
+            })
+
+            const coachMessage: CoachMessage = {
+                id: coachMessageId,
+                role: "assistant",
+                text: data?.reply || "I could not generate a reply right now. Try again in a moment.",
+            }
+
+            setMessages((prev) => [...prev, coachMessage])
+        } catch (error: unknown) {
+            const coachMessage: CoachMessage = {
+                id: coachMessageId,
+                role: "assistant",
+                text: getErrorMessage(error),
+            }
+
+            setMessages((prev) => [...prev, coachMessage])
+        } finally {
+            setIsThinking(false)
+        }
     }
 
     const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
-        sendPrompt(input)
+        void sendPrompt(input)
     }
 
     const insightCards = [
@@ -204,14 +207,14 @@ const AiCoach = () => {
                     </div>
                     <div className="inline-flex w-fit items-center gap-2 rounded-lg border border-cyan-200/70 bg-cyan-500/10 px-4 py-3 text-sm font-semibold text-cyan-700 dark:border-cyan-500/20 dark:text-cyan-300">
                         <SparklesIcon className="size-4" />
-                        Frontend assistant
+                        Gemini-powered
                     </div>
                 </div>
             </div>
 
-            <div className="p-4 lg:grid lg:grid-cols-[1.35fr_0.65fr] lg:gap-6 lg:p-6">
-                <Card className="flex min-h-[640px] flex-col">
-                    <div className="mb-5 flex items-center gap-3">
+            <div className="mx-auto max-w-5xl p-4 lg:grid lg:grid-cols-[minmax(0,0.95fr)_360px] lg:gap-6 lg:p-6">
+                <Card className="flex min-h-[500px] max-h-[580px] flex-col">
+                    <div className="mb-4 flex items-center gap-3">
                         <div className="flex size-11 items-center justify-center rounded-lg bg-cyan-500/10">
                             <BotIcon className="size-6 text-cyan-500" />
                         </div>
@@ -221,11 +224,12 @@ const AiCoach = () => {
                         </div>
                     </div>
 
-                    <div className="mb-4 flex flex-wrap gap-2">
+                    <div className="mb-3 flex flex-wrap gap-2">
                         {quickPrompts.map((prompt) => (
                             <button
                                 key={prompt}
-                                onClick={() => sendPrompt(prompt)}
+                                onClick={() => { void sendPrompt(prompt) }}
+                                disabled={isThinking}
                                 className="rounded-lg border border-slate-200/70 bg-white/70 px-3 py-2 text-sm font-semibold text-slate-600 shadow-sm shadow-slate-950/5 transition-all duration-300 hover:-translate-y-0.5 hover:border-cyan-300 hover:text-cyan-700 dark:border-white/10 dark:bg-slate-800/60 dark:text-slate-300 dark:hover:border-cyan-500/40 dark:hover:text-cyan-300">
                                 {prompt}
                             </button>
@@ -245,16 +249,23 @@ const AiCoach = () => {
                                 </div>
                             </div>
                         ))}
+                        {isThinking && (
+                            <div className="flex justify-start">
+                                <div className="rounded-lg border border-white/70 bg-white/85 px-4 py-3 text-sm text-slate-500 shadow-sm shadow-slate-950/5 dark:border-white/10 dark:bg-slate-800/80 dark:text-slate-300">
+                                    FitCoach is thinking...
+                                </div>
+                            </div>
+                        )}
                     </div>
 
-                    <form onSubmit={handleSubmit} className="mt-4 flex gap-3">
+                    <form onSubmit={handleSubmit} className="mt-3 flex gap-3">
                         <input
                             value={input}
                             onChange={(event) => setInput(event.target.value)}
                             placeholder="Ask for a meal idea, workout nudge, or daily review"
                             className="min-w-0 flex-1 rounded-lg border border-slate-200/80 bg-white/75 px-4 py-3 text-slate-800 shadow-sm shadow-slate-950/5 outline-none backdrop-blur-xl transition-all duration-300 placeholder:text-slate-400 focus:border-cyan-400 focus:ring-4 focus:ring-cyan-500/20 dark:border-white/10 dark:bg-slate-900/70 dark:text-white"
                         />
-                        <Button type="submit" className="px-4">
+                        <Button type="submit" className="px-4" disabled={isThinking}>
                             <SendIcon className="size-5" />
                             <span className="hidden sm:inline">Send</span>
                         </Button>
